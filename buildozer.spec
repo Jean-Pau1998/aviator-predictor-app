@@ -47,3 +47,6 @@ android.theme = @android:style/Theme.NoTitleBar
 
 # (str) Path to build artifact (APK) output
 android.archive_path = bin/aviatorpredictor.apk
+
+android.sdk = 30
+android.build_tools_version = 30.0.3
