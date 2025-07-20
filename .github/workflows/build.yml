@@ -19,10 +19,10 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
+     - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y build-essential libncurses5 python3-pip zip unzip openjdk-11-jdk
+          sudo apt install -y build-essential libncurses-dev python3-pip zip unzip openjdk-11-jdk
           pip install --upgrade pip
           pip install buildozer cython
 
