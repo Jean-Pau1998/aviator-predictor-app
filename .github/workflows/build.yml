@@ -33,21 +33,21 @@ jobs:
         mkdir -p ~/.buildozer/android/platform
         cd ~/.buildozer/android/platform
 
-        # Download cmdline tools and extract
+        # Download Android command-line tools
         wget https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip -O cmdline-tools.zip
-        unzip -q cmdline-tools.zip -d cmdline-tools
+        unzip -q cmdline-tools.zip -d cmdline-tools-tmp
 
-        # Move into expected structure: cmdline-tools/latest
+        # Move to correct folder structure
         mkdir -p android-sdk/cmdline-tools/latest
-        mv cmdline-tools/cmdline-tools/* android-sdk/cmdline-tools/latest/
+        mv cmdline-tools-tmp/* android-sdk/cmdline-tools/latest/
 
-        # Set environment
+        # Add to PATH and set ANDROID_SDK_ROOT
         echo "ANDROID_SDK_ROOT=$HOME/.buildozer/android/platform/android-sdk" >> $GITHUB_ENV
         echo "$HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
         echo "$HOME/.buildozer/android/platform/android-sdk/platform-tools" >> $GITHUB_PATH
 
-        # Install required SDK packages
-        sdkmanager --sdk_root=$HOME/.buildozer/android/platform/android-sdk --licenses
+        # Accept licenses & install components
+        yes | sdkmanager --sdk_root=$HOME/.buildozer/android/platform/android-sdk --licenses
         sdkmanager --sdk_root=$HOME/.buildozer/android/platform/android-sdk \
           "platform-tools" "platforms;android-34" "build-tools;34.0.0" "ndk;25.2.9519653"
 
