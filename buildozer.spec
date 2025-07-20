@@ -9,6 +9,9 @@ package.name = aviatorpredictor
 # (str) Package domain (needed for android/ios packaging)
 package.domain = org.example
 
+# (str) Version of your application
+version = 1.0
+
 # (str) Source code where the main.py lives
 source.dir = .
 
