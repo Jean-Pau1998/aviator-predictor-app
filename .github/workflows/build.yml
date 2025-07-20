@@ -7,33 +7,34 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
 
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: 3.11
+        python-version: "3.11"
 
     - name: Install dependencies
       run: |
-        sudo apt update
-        sudo apt install -y build-essential libssl-dev libffi-dev python3-dev git zip unzip openjdk-17-jdk
         python -m pip install --upgrade pip
-        pip install buildozer cython
+        pip install buildozer
 
-    - name: Accept SDK Licenses
-      run: yes | sdkmanager --licenses || true
+    - name: Install Android SDK
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: 30
+        target: default
+        arch: x86_64
+        force-avd-creation: false
+        emulator-options: "-no-window -no-audio"
+        script: echo "SDK installed"
 
     - name: Build APK
       run: |
+        sudo apt update
+        sudo apt install -y zip unzip openjdk-11-jdk
         buildozer android debug
-
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: aviator-apk
-        path: bin/*.apk
