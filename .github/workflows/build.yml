@@ -2,39 +2,27 @@ name: Build APK
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.11"
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install buildozer
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install buildozer cython
 
-    - name: Install Android SDK
-      uses: reactivecircus/android-emulator-runner@v2
-      with:
-        api-level: 30
-        target: default
-        arch: x86_64
-        force-avd-creation: false
-        emulator-options: "-no-window -no-audio"
-        script: echo "SDK installed"
+      - name: Accept SDK Licenses
+        run: yes | sdkmanager --licenses || true
 
-    - name: Build APK
-      run: |
-        sudo apt update
-        sudo apt install -y zip unzip openjdk-11-jdk
-        buildozer android debug
+      - name: Build APK
+        run: buildozer android debug
