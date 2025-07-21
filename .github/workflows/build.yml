@@ -60,7 +60,7 @@ jobs:
         run: buildozer android debug
 
       - name: Upload APK
-        uses: actions/upload-artifact@4
+        uses: actions/upload-artifact@3
         with:
           name: aviator-predictor-apk-v4
           path: bin/*.apk
