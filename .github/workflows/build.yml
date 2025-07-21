@@ -28,12 +28,18 @@ jobs:
         run: |
           mkdir -p $HOME/android-sdk/cmdline-tools
           cd $HOME/android-sdk/cmdline-tools
+          
+          # Download and unzip to correct subfolder "latest"
           wget https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip -O cmdtools.zip
+          mkdir -p latest
           unzip cmdtools.zip -d latest
+
           export ANDROID_HOME=$HOME/android-sdk
           export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
-          yes | sdkmanager --sdk_root=$ANDROID_HOME --licenses
-          yes | sdkmanager --sdk_root=$ANDROID_HOME \
+
+          # Accept licenses and install SDK components
+          yes | sdkmanager --licenses
+          yes | sdkmanager \
             "platform-tools" \
             "platforms;android-34" \
             "build-tools;34.0.0"
