@@ -2,51 +2,59 @@ name: Build APK
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.11"
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
 
-    - name: Install Buildozer and dependencies
-      run: |
-        pip install --upgrade pip
-        pip install --user buildozer cython
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
 
-    - name: Set up Java
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: '17'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install buildozer cython
 
-    - name: Set up Android SDK and NDK
-      env:
-        ANDROID_HOME: ${{ github.workspace }}/android-sdk
-      run: |
-        mkdir -p $ANDROID_HOME/cmdline-tools
-        cd $ANDROID_HOME/cmdline-tools
+      - name: Set up Android SDK & NDK
+        env:
+          ANDROID_HOME: ${{ github.workspace }}/android-sdk
+        run: |
+          mkdir -p $ANDROID_HOME/cmdline-tools
+          cd $ANDROID_HOME/cmdline-tools
 
-        wget https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip -O tools.zip
-        unzip -q tools.zip -d temp
-        mv temp cmdline-tools
-        export PATH=$ANDROID_HOME/cmdline-tools/cmdline-tools/bin:$PATH
+          wget https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip -O tools.zip
+          unzip -q tools.zip -d tools
+          
+          export PATH=$ANDROID_HOME/cmdline-tools/tools/bin:$PATH
 
-        yes | $ANDROID_HOME/cmdline-tools/cmdline-tools/bin/sdkmanager --licenses
-        $ANDROID_HOME/cmdline-tools/cmdline-tools/bin/sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" "ndk;25.2.9519653"
+          yes | sdkmanager --licenses
+          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" "ndk;25.2.9519653"
 
-        echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
-        echo "$ANDROID_HOME/cmdline-tools/cmdline-tools/bin" >> $GITHUB_PATH
-        echo "$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
+          echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
+          echo "$ANDROID_HOME/cmdline-tools/tools/bin" >> $GITHUB_PATH
+          echo "$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
 
-    - name: Build APK
-      run: |
-        buildozer android debug
+      - name: Build APK
+        run: |
+          buildozer android debug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: aviator-predictor-apk
+          path: bin/*.apk
