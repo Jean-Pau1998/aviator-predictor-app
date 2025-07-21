@@ -22,6 +22,7 @@ android.sdk = 34
 android.ndk = 23b
 android.ndk_api = 21
 android.build_tools = 34.0.0
+android.use_aidl = False
 
 # Disable AIDL to avoid missing aidl error
 android.use_aidl = False
