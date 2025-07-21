@@ -29,9 +29,8 @@ jobs:
       run: |
         mkdir -p $HOME/.android
         touch $HOME/.android/repositories.cfg
-        sudo apt install -y wget tar
         wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip
-        unzip cmdline-tools.zip
+        unzip -q cmdline-tools.zip
         mkdir -p $HOME/android-sdk/cmdline-tools/latest
         mv cmdline-tools/* $HOME/android-sdk/cmdline-tools/latest/
         export ANDROID_HOME=$HOME/android-sdk
