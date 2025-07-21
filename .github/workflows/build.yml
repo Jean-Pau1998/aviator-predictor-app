@@ -33,26 +33,24 @@ jobs:
         mkdir -p $ANDROID_HOME/cmdline-tools
         cd $ANDROID_HOME/cmdline-tools
 
-        # Download Android command line tools
+        # Download the Android cmdline-tools and rename to 'latest'
         wget https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip -O cmdtools.zip
-        unzip cmdtools.zip -d temp
-        mv temp/cmdline-tools latest
-        rm -rf temp
+        unzip cmdtools.zip -d cmdline-tools-temp
+        mv cmdline-tools-temp/cmdline-tools $ANDROID_HOME/cmdline-tools/latest
 
-        # Set environment path
-        echo "export ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
-        echo "export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH" >> $GITHUB_ENV
+        # Set path to include sdkmanager
+        export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
 
-        # Use full path here so GitHub can find sdkmanager
-        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --licenses <<< "y"
-        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} "platform-tools" "build-tools;34.0.0" "platforms;android-34"
+        # Accept licenses and install build tools
+        sdkmanager --sdk_root=${ANDROID_HOME} --licenses <<< "y"
+        sdkmanager --sdk_root=${ANDROID_HOME} "platform-tools" "build-tools;34.0.0" "platforms;android-34"
 
     - name: Build APK
       env:
         ANDROID_HOME: $HOME/android-sdk
         PATH: $HOME/android-sdk/cmdline-tools/latest/bin:$HOME/android-sdk/platform-tools:$PATH
       run: |
-        cd aviator-predictor-app  # Change if your project folder is named differently
+        cd aviator-predictor-app  # Change if your actual folder is different
         buildozer android debug
 
     - name: Upload APK
