@@ -33,9 +33,9 @@ jobs:
         run: |
           mkdir -p $HOME/android-sdk/cmdline-tools
           cd $HOME/android-sdk/cmdline-tools
-          curl -O https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
-          unzip -q commandlinetools-linux-9477386_latest.zip -d latest
-          export PATH=$HOME/android-sdk/cmdline-tools/latest/bin:$PATH
+          curl -o tools.zip https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
+          unzip tools.zip
+          mv cmdline-tools latest
           echo "PATH=$HOME/android-sdk/cmdline-tools/latest/bin:$PATH" >> $GITHUB_ENV
 
       - name: Install Android components
@@ -54,7 +54,8 @@ jobs:
 
       - name: Accept Licenses
         run: |
-          yes | sdkmanager --sdk_root=$HOME/android-sdk --licenses
+          export PATH=$HOME/android-sdk/cmdline-tools/latest/bin:$PATH
+          yes | sdkmanager --licenses
 
       - name: Build with Buildozer
         run: buildozer android debug
