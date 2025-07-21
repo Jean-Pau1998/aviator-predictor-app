@@ -8,7 +8,6 @@ source.include_exts = py,png,jpg,kv,atlas
 version = 1.0
 requirements = python3,kivy
 orientation = portrait
-osx.python_version = 3
 fullscreen = 1
 
 [buildozer]
@@ -25,14 +24,6 @@ android.accept_sdk_license = True
 android.arch = armeabi-v7a
 android.packaging = apk
 copy_to = aviator_predictor.apk
-p4a.branch = master
-p4a.bootstrap = sdl2
 
 [android]
-
-# Optional permissions
 android.permissions = INTERNET
-
-[buildozer:application]
-
-# Leave this blank unless you're customizing app icons, splash, etc.
