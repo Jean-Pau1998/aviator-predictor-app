@@ -34,13 +34,12 @@ jobs:
         env:
           ANDROID_SDK_ROOT: ${{ github.workspace }}/android-sdk
         run: |
-          mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
-          cd $ANDROID_SDK_ROOT/cmdline-tools
+          mkdir -p $ANDROID_SDK_ROOT/cmdline-tools/latest
+          cd $ANDROID_SDK_ROOT/cmdline-tools/latest
 
-          # Download and unzip cmdline tools
           wget https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip -O tools.zip
-          unzip -q tools.zip -d latest
-          mv latest $ANDROID_SDK_ROOT/cmdline-tools/latest
+          unzip -q tools.zip
+          rm tools.zip
 
           export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH
 
