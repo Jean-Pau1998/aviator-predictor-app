@@ -30,19 +30,21 @@ jobs:
       env:
         ANDROID_HOME: $HOME/android-sdk
       run: |
-        mkdir -p $ANDROID_HOME/cmdline-tools
+        mkdir -p $ANDROID_HOME/cmdline-tools/latest
         cd $ANDROID_HOME/cmdline-tools
 
-        # Download the Android cmdline-tools and rename to 'latest'
+        # Download and unzip
         wget https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip -O cmdtools.zip
-        unzip cmdtools.zip -d cmdline-tools-temp
-        mv cmdline-tools-temp/cmdline-tools $ANDROID_HOME/cmdline-tools/latest
+        unzip cmdtools.zip -d temp
+
+        # Move the actual cmdline-tools into the 'latest' folder
+        mv temp/cmdline-tools/* latest/
 
         # Set path to include sdkmanager
         export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
 
-        # Accept licenses and install build tools
-        sdkmanager --sdk_root=${ANDROID_HOME} --licenses <<< "y"
+        # Accept licenses and install required tools
+        yes | sdkmanager --sdk_root=${ANDROID_HOME} --licenses
         sdkmanager --sdk_root=${ANDROID_HOME} "platform-tools" "build-tools;34.0.0" "platforms;android-34"
 
     - name: Build APK
