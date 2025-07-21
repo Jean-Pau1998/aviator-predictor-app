@@ -22,13 +22,14 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '17'  # ✅ FIXED HERE
+          java-version: '17'
 
-      - name: Install Buildozer
+      - name: Install Buildozer + dependencies
         run: |
           sudo apt update
           sudo apt install -y zip unzip openjdk-17-jdk python3-pip
           pip install --upgrade pip
+          pip install cython
           pip install buildozer
 
       - name: Set up Android SDK
