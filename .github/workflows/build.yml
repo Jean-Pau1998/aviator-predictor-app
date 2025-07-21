@@ -24,20 +24,19 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Install Buildozer + dependencies
+      - name: Install Buildozer & dependencies
         run: |
           sudo apt update
           sudo apt install -y zip unzip openjdk-17-jdk python3-pip
           pip install --upgrade pip
-          pip install cython
-          pip install buildozer
+          pip install cython buildozer
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Accept Licenses & Install Build Tools
+      - name: Accept Licenses & Install Android Build Tools
         run: |
-          sdkmanager --install "build-tools;34.0.0" "platform-tools" "platforms;android-34"
+          yes | sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
           yes | sdkmanager --licenses
 
       - name: Build APK
