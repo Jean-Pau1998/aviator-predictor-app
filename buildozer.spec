@@ -1,23 +1,18 @@
 [app]
+
 title = Aviator Predictor
 package.name = aviatorpredictor
-package.domain = org.example
+package.domain = org.aviator.predictor
 source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
 version = 1.0
 requirements = python3,kivy
 orientation = portrait
-fullscreen = 1
 osx.python_version = 3
-osx.kivy_version = 1.11.1
-
-# Permissions (optional: only if your app needs them)
-android.permissions = INTERNET,WAKE_LOCK
-
-# Icon settings (optional)
-icon.filename = %(source.dir)s/icon.png
+fullscreen = 1
 
 [buildozer]
+
 log_level = 2
 warn_on_root = 1
 target = android
@@ -33,28 +28,11 @@ copy_to = aviator_predictor.apk
 p4a.branch = master
 p4a.bootstrap = sdl2
 
-# Set Python version and Android versions
-android.api = 34
-android.minapi = 21
-android.sdk = 34
-android.ndk = 25b
-android.build_tools = 34.0.0
-android.ndk_path = 
-android.sdk_path = 
-android.accept_sdk_license = True
+[android]
 
-# Set architecture
-android.arch = armeabi-v7a
+# Optional permissions
+android.permissions = INTERNET
 
-# Package format
-android.packaging = apk
+[buildozer:application]
 
-# Whether to copy the APK to the project root after build
-copy_to = aviator_predictor.apk
-
-# Extra settings
-p4a.branch = master
-p4a.bootstrap = sdl2
-
-# Exclude files (optional)
-exclude_dirs = tests, bin, venv, __pycache__
+# Leave this blank unless you're customizing app icons, splash, etc.
