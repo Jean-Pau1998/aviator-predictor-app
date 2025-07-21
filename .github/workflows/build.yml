@@ -1,4 +1,4 @@
-name: Build APK
+name: build
 
 on:
   push:
@@ -10,48 +10,49 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Post Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.11
 
-      - name: Install dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y zip unzip openjdk-17-jdk python3-pip
-          pip install buildozer cython
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y zip unzip openjdk-17-jdk python3-pip git
+        pip install --upgrade pip
+        pip install cython
+        pip install buildozer
 
-      - name: Install Android SDK and AIDL
-        run: |
-          mkdir -p $HOME/android-sdk/cmdline-tools
-          cd $HOME/android-sdk/cmdline-tools
-          
-          # Download and unzip to correct subfolder "latest"
-          wget https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip -O cmdtools.zip
-          mkdir -p latest
-          unzip cmdtools.zip -d latest
+    - name: Install Android SDK and AIDL
+      env:
+        ANDROID_HOME: $HOME/android-sdk
+      run: |
+        mkdir -p $ANDROID_HOME/cmdline-tools
+        cd $ANDROID_HOME/cmdline-tools
 
-          export ANDROID_HOME=$HOME/android-sdk
-          export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
+        # Download and unzip into 'latest' subfolder
+        wget https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip -O cmdtools.zip
+        mkdir latest
+        unzip cmdtools.zip -d latest
 
-          # Accept licenses and install SDK components
-          yes | sdkmanager --licenses
-          yes | sdkmanager \
-            "platform-tools" \
-            "platforms;android-34" \
-            "build-tools;34.0.0"
+        export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
 
-      - name: Build APK
-        run: |
-          export ANDROID_HOME=$HOME/android-sdk
-          export PATH=$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/34.0.0:$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
-          buildozer android debug
+        yes | sdkmanager --licenses
+        yes | sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: aviator-predictor-apk
-          path: bin/*.apk
+    - name: Build APK
+      env:
+        ANDROID_HOME: $HOME/android-sdk
+        PATH: $HOME/android-sdk/cmdline-tools/latest/bin:$HOME/android-sdk/platform-tools:$PATH
+      run: |
+        cd aviator-predictor-app  # or your app folder name
+        buildozer android debug
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: Aviator Predictor APK
+        path: aviator-predictor-app/bin/*.apk
